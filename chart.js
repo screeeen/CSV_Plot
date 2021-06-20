@@ -192,7 +192,7 @@ function renderChart(riders) {
 }
 
 /* set up XMLHttpRequest */
-var url = "./data/skate_update.xls";
+var url = "./data/bmx_update.xls";
 var oReq = new XMLHttpRequest();
 oReq.open("GET", url, true);
 oReq.responseType = "arraybuffer";
@@ -219,12 +219,14 @@ oReq.onload = function (e) {
   var riders = data
     .map((e) => [
       {
-        age: Object.values(e)[6].slice(6),
-        country: Object.values(e)[10],
-        sport: Object.values(e)[0],
+        age: Object.values(e)[8].slice(6),
+        country: Object.values(e)[11],
+        sport: Object.values(e)[2],
       },
     ])
     .flat(1);
+
+  console.log(riders);
 
   renderChart(riders);
 };
