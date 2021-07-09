@@ -6,9 +6,11 @@ function renderChart(riders) {
 
   var currentYear = new Date().getFullYear();
   var ages = riders.map((rider) => currentYear - rider.age);
-  var country = riders.map((rider) => rider.country);
+  var country = riders
+    .filter((rider) => rider.country !== "Spain")
+    .map((rider) => rider.country);
   var sport = riders.map((rider) => rider.sport);
-  console.log(ages);
+  console.log("ages", ages);
   console.log(country);
 
   var sportMod = sport.map((sport) => {
@@ -31,6 +33,8 @@ function renderChart(riders) {
     (map, year) => map.set(year, (map.get(year) || 0) + 1),
     new Map()
   );
+
+  console.log("freqMapAges", freqMapAges);
 
   const freqMapCountry = country.reduce(
     (map, country) => map.set(country, (map.get(country) || 0) + 1),
@@ -183,6 +187,7 @@ function renderChart(riders) {
             ticks: {
               beginAtZero: true,
               min: 0,
+              // max: 20,
             },
           },
         ],
@@ -216,16 +221,18 @@ oReq.onload = function (e) {
   /* Get worksheet */
   var worksheet = workbook.Sheets[first_sheet_name];
   var data = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+
   var riders = data
     .map((e) => [
       {
-        age: Object.values(e)[6].slice(6),
-        country: Object.values(e)[10],
-        sport: Object.values(e)[0],
+        age: parseInt(e.born_date.slice(6)),
+        country: e.origin,
+        sport: e.category,
       },
     ])
     .flat(1);
 
+  console.log("riders", riders);
   renderChart(riders);
 };
 
