@@ -216,6 +216,9 @@ oReq.onload = function (e) {
   /* Get worksheet */
   var worksheet = workbook.Sheets[first_sheet_name];
   var data = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+
+  console.log(data);
+
   var riders = data
     .map((e) => [
       {
