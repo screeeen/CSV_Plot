@@ -7,11 +7,9 @@ function renderChart(riders) {
   var currentYear = new Date().getFullYear();
   var ages = riders.map((rider) => currentYear - rider.age);
   var country = riders
-    .filter((rider) => rider.country !== "Spain")
+    // .filter((rider) => rider.country !== "Spain")
     .map((rider) => rider.country);
   var sport = riders.map((rider) => rider.sport);
-  console.log("ages", ages);
-  console.log(country);
 
   var sportMod = sport.map((sport) => {
     if (
@@ -25,16 +23,12 @@ function renderChart(riders) {
     }
   });
 
-  console.log(sportMod);
-
   ages.sort((a, b) => a - b);
 
   const freqMapAges = ages.reduce(
     (map, year) => map.set(year, (map.get(year) || 0) + 1),
     new Map()
   );
-
-  console.log("freqMapAges", freqMapAges);
 
   const freqMapCountry = country.reduce(
     (map, country) => map.set(country, (map.get(country) || 0) + 1),
@@ -63,6 +57,12 @@ function renderChart(riders) {
 
   const xAxisArrSport = Array.from(freqMapSport.keys()); // array of unique years
   const yAxisArrSport = Array.from(freqMapSport.values()); // array of frequencies for each year
+  console.log(freqMapSport.keys());
+  console.log(freqMapSport["WCS Men"]);
+  console.log(freqMapSport.keys()[1]);
+
+
+
   xAxisArrSport.unshift(0); // Array.from(freqMap.keys()); // array of unique years
   yAxisArrSport.unshift(0); // Array.from(freqMap.values()); // array of frequencies for each year
 
@@ -91,6 +91,7 @@ function renderChart(riders) {
       },
     },
   });
+
   var Countries = new Chart(ctx2, {
     type: "radar",
     data: {
@@ -114,20 +115,15 @@ function renderChart(riders) {
         display: true,
         text: "Geographic Distribution",
       },
-      scales: {
-        scale: {
-          yAxes: [
-            {
-              display: false,
-              ticks: {
-                beginAtZero: true,
-                max: 100,
-                min: 0,
-              },
-            },
-          ],
-        },
-      },
+        scales: {
+            r: {
+                max: 12,
+                min: 1,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
     },
   });
 
@@ -197,7 +193,7 @@ function renderChart(riders) {
 }
 
 /* set up XMLHttpRequest */
-var url = "./data/skate_update.xls";
+var url = "./data/skate_28_July.xls";
 var oReq = new XMLHttpRequest();
 oReq.open("GET", url, true);
 oReq.responseType = "arraybuffer";
@@ -225,7 +221,7 @@ oReq.onload = function (e) {
   var riders = data
     .map((e) => [
       {
-        age: parseInt(e.born_date.slice(6)),
+        age: parseInt(e.born_date.toString().slice(6)),
         country: e.origin,
         sport: e.category,
       },
