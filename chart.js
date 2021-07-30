@@ -1,8 +1,10 @@
 function renderChart(riders) {
   var ctx = document.getElementById("Ages").getContext("2d");
   var ctx2 = document.getElementById("Countries").getContext("2d");
-  var ctx3 = document.getElementById("Sport").getContext("2d");
-  var ctx4 = document.getElementById("SportMod").getContext("2d");
+  var ctx3 = document.getElementById("Discipline").getContext("2d");
+  var ctx4 = document.getElementById("DisciplineBars").getContext("2d");
+  var ctx5 = document.getElementById("Sport").getContext("2d");
+  var ctx6 = document.getElementById("SportMod").getContext("2d");
 
   var currentYear = new Date().getFullYear();
   var ages = riders.map((rider) => currentYear - rider.age);
@@ -12,15 +14,7 @@ function renderChart(riders) {
   var sport = riders.map((rider) => rider.sport);
 
   var sportMod = sport.map((sport) => {
-    if (
-      sport === "WCS Men + WCS Miniramp" ||
-      sport === "WCS Women + WCS Miniramp" ||
-      sport === "WCS Miniramp"
-    ) {
-      return "WCS Miniramp";
-    } else {
-      return sport;
-    }
+    return sport;
   });
 
   ages.sort((a, b) => a - b);
@@ -57,19 +51,37 @@ function renderChart(riders) {
 
   const xAxisArrSport = Array.from(freqMapSport.keys()); // array of unique years
   const yAxisArrSport = Array.from(freqMapSport.values()); // array of frequencies for each year
-  console.log(freqMapSport.keys());
-  console.log(freqMapSport["WCS Men"]);
-  console.log(freqMapSport.keys()[1]);
-
-
 
   xAxisArrSport.unshift(0); // Array.from(freqMap.keys()); // array of unique years
   yAxisArrSport.unshift(0); // Array.from(freqMap.values()); // array of frequencies for each year
 
   const xAxisArrSportMod = Array.from(freqMapSportMod.keys()); // array of unique years
   const yAxisArrSportMod = Array.from(freqMapSportMod.values()); // array of frequencies for each year
-  // xAxisArrSportMod.unshift(0); // Array.from(freqMap.keys()); // array of unique years
-  // yAxisArrSportMod.unshift(0); // Array.from(freqMap.values()); // array of frequencies for each year
+
+  const WCSMen =
+    freqMapSport.get("WCS Men") + freqMapSport.get("WCS Men + WCS Miniramp");
+  const WCSWomen =
+    freqMapSport.get("WCS Women") +
+    +freqMapSport.get("WCS Women + WCS Miniramp");
+  const WCSMiniramp =
+    freqMapSport.get("WCS Miniramp") +
+    +freqMapSport.get("WCS Men + WCS Miniramp") +
+    +freqMapSport.get("WCS Women + WCS Miniramp");
+
+  console.log("WCSMen", WCSMen);
+  console.log("WCSWomen", WCSWomen);
+  console.log("WCSMiniramp", WCSMiniramp);
+
+  freqMapDiscipline = new Map();
+
+  freqMapDiscipline.set("WCS Men", WCSMen);
+  freqMapDiscipline.set("WCS Women", WCSWomen);
+  freqMapDiscipline.set("WCS Miniramp", WCSMiniramp);
+
+  console.log(freqMapDiscipline);
+
+  const xAxisArrDiscipline = Array.from(freqMapDiscipline.keys()); // array of unique years
+  const yAxisArrDiscipline = Array.from(freqMapDiscipline.values()); // array of frequencies for each year
 
   var Ages = new Chart(ctx, {
     type: "radar",
@@ -115,19 +127,83 @@ function renderChart(riders) {
         display: true,
         text: "Geographic Distribution",
       },
-        scales: {
-            r: {
-                max: 12,
-                min: 1,
-                ticks: {
-                    stepSize: 1
-                }
-            }
-        }
+      scales: {
+        r: {
+          max: 12,
+          min: 1,
+          ticks: {
+            stepSize: 1,
+          },
+        },
+      },
     },
   });
 
-  var Sports = new Chart(ctx3, {
+  var Discipline = new Chart(ctx3, {
+    type: "radar",
+    data: {
+      labels: xAxisArrDiscipline,
+      datasets: [
+        {
+          label: "contest",
+          data: yAxisArrDiscipline,
+          fill: true,
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          borderColor: "rgb(255, 99, 132)",
+          pointBackgroundColor: "rgb(255, 99, 132)",
+          pointBorderColor: "#fff",
+          pointHoverBackgroundColor: "#fff",
+          pointHoverBorderColor: "rgb(255, 99, 132)",
+        },
+      ],
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Contest registered",
+      },
+    },
+  });
+
+  var DisciplineDistroBars = new Chart(ctx4, {
+    type: "bar",
+    data: {
+      labels: xAxisArrDiscipline,
+      datasets: [
+        {
+          label: "contest Distro",
+          data: yAxisArrDiscipline,
+          fill: true,
+          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          borderColor: "rgb(255, 99, 132)",
+          pointBackgroundColor: "rgb(255, 99, 132)",
+          pointBorderColor: "#fff",
+          pointHoverBackgroundColor: "#fff",
+          pointHoverBorderColor: "rgb(255, 99, 132)",
+        },
+      ],
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Contest Distro",
+      },
+      scales: {
+        yAxes: [
+          {
+            display: true,
+            ticks: {
+              beginAtZero: true,
+              min: 0,
+              // max: 20,
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  var Sports = new Chart(ctx5, {
     type: "radar",
     data: {
       labels: xAxisArrSport,
@@ -153,7 +229,7 @@ function renderChart(riders) {
     },
   });
 
-  var SportsDistro = new Chart(ctx4, {
+  var SportsDistro = new Chart(ctx6, {
     type: "bar",
     data: {
       labels: xAxisArrSportMod,
