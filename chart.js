@@ -92,7 +92,8 @@ function renderChart(riders) {
           label: "ages",
           data: yAxisArrAges,
           fill: true,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
+          backgroundColor: "rgb(60,179,113)",
+          borderColor: "rgb(60,179,113)",
         },
       ],
     },
@@ -112,9 +113,9 @@ function renderChart(riders) {
         {
           label: "countries",
           data: yAxisArrCountry,
-          fill: true,
-          // backgroundColor: "rgba(255, 99, 132, 0.2)",
-          // borderColor: "rgb(50, 50, 100)",
+          fill: false,
+          backgroundColor: "rgb(60,179,113)",
+          borderColor: "rgb(60,179,113)",
           // pointBackgroundColor: "rgb(255, 99, 132)",
           // pointBorderColor: "#fff",
           // pointHoverBackgroundColor: "#fff",
@@ -132,7 +133,7 @@ function renderChart(riders) {
           max: 10,
           min: 0,
           ticks: {
-            stepSize: 0.5,
+            // stepSize: 0.5,
           },
         },
       },
@@ -147,7 +148,9 @@ function renderChart(riders) {
         {
           label: "contest",
           data: yAxisArrDiscipline,
-          fill: false,
+          fill: true,
+          backgroundColor: "rgb(60,179,113)",
+          borderColor: "rgb(60,179,113)",
         },
       ],
     },
@@ -174,10 +177,9 @@ function renderChart(riders) {
         {
           label: "contest Distro",
           data: yAxisArrDiscipline,
-          borderColor: "rgb(0, 99, 132)",
-          fill: false,
-          // backgroundColor: "rgba(255, 99, 132, 0.2)",
-          // borderColor: "rgb(255, 99, 132)",
+          fill: true,
+          backgroundColor: "rgb(60,179,113)",
+          borderColor: "rgb(60,179,113)",
           // pointBackgroundColor: "rgb(255, 99, 132)",
           // pointBorderColor: "#fff",
           // pointHoverBackgroundColor: "#fff",
@@ -216,6 +218,8 @@ function renderChart(riders) {
           label: "contest",
           data: yAxisArrSport,
           fill: false,
+          backgroundColor: "rgb(60,179,113)",
+          borderColor: "rgb(60,179,113)",
         },
       ],
     },
@@ -236,12 +240,8 @@ function renderChart(riders) {
           label: "contest Distro",
           data: yAxisArrSportMod,
           fill: true,
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          borderColor: "rgb(255, 99, 132)",
-          pointBackgroundColor: "rgb(255, 99, 132)",
-          pointBorderColor: "#fff",
-          pointHoverBackgroundColor: "#fff",
-          pointHoverBorderColor: "rgb(255, 99, 132)",
+          backgroundColor: "rgb(60,179,113)",
+          borderColor: "rgb(60,179,113)",
         },
       ],
     },
@@ -267,7 +267,7 @@ function renderChart(riders) {
 }
 
 /* set up XMLHttpRequest */
-var url = "./data/skate_28_July.xls";
+var url = "./data/inscripciones_2022.xlsx";
 var oReq = new XMLHttpRequest();
 oReq.open("GET", url, true);
 oReq.responseType = "arraybuffer";
@@ -292,11 +292,20 @@ oReq.onload = function (e) {
   var worksheet = workbook.Sheets[first_sheet_name];
   var data = XLSX.utils.sheet_to_json(worksheet, { raw: true });
 
+  console.log(data)
+  console.log(data[0])
+
+  const refDate = new Date(1/1/1900)
+  console.log(refDate)
+
   var riders = data
     .map((e) => [
       {
-        age: parseInt(e.born_date.toString().slice(6)),
-        country: e.origin,
+
+        // age: (e.born_date),
+        // age: new Date(e.born_date)
+        age: e.born_date.toString().slice(6),
+        country: e.country,
         sport: e.category,
       },
     ])
